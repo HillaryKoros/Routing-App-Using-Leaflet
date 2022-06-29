@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+    <title>Routing App</title>
+
+    <!-- leaflet css cdn -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"/>
+    <!-- leaflet routing machine  css  -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map" style="width:100%; height:100vh "></div>
+</body>
+
+</html>
+
+<!-- leaflet js cdn -->
+<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+<!-- leaflet routing machine  js  -->
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+
+<Script>
+
+    // leaflet map with google satellite layer
+    var map = L.map('map').setView([-0.7858410685941518, 35.33387634040145],11);
+    var tileLayer= L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+}).addTo(map);
+
+
+//marker icon
+var bikeIcon = L.icon({
+    iconUrl:'img/taxi.jpg',
+    iconSize: [40,40]
+})
+//marker
+var marker = L.marker([-0.7858410685941518, 35.33387634040145],{icon:bikeIcon}).addTo(map)
+
+
+//map on click
+map.on('click', function(e){
+    console.log(e)
+    var secondMarker= L.marker([e.latlng.lat,e.latlng.lng]).addTo(map);
+    L.Routing.control({
+  waypoints: [
+    L.latLng(-0.7858410685941518, 35.33387634040145),
+    L.latLng(e.latlng.lat,e.latlng.lng)
+  ]
+}).on('routesfound',function(e){
+    console.log(e)
+    e.routes[0].coordinates.forEach(function(coord,index){
+        setTimeout(()=>{
+            marker.setLatLng([coord.lat,coord.lng])
+        }, 100*index);
+    })
+})
+
+.addTo(map);
+})
+
+
+
+</Script>
