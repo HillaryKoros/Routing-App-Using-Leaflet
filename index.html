@@ -51,17 +51,17 @@ var marker = L.marker([-0.781064, 35.343239],{icon:bikeIcon}).addTo(map)
 
 
 //map on click
-map.on('click', function(e){
-    console.log(e)
-    var secondMarker= L.marker([e.latlng.lat,e.latlng.lng]).addTo(map);
+map.on('click', function(f){
+    console.log(f)
+    var secondMarker= L.marker([f.latlng.lat,f.latlng.lng]).addTo(map);
     L.Routing.control({
   waypoints: [
     L.latLng(-0.781064, 35.343239),
-    L.latLng(e.latlng.lat,e.latlng.lng)
+    L.latLng(f.latlng.lat,f.latlng.lng)
   ]
-}).on('routesfound',function(e){
-    console.log(e)
-    e.routes[0].coordinates.forEach(function(coord,index){
+}).on('routesfound',function(f){
+    console.log(f)
+    f.routes[0].coordinates.forEach(function(coord,index){
         setTimeout(()=>{
             marker.setLatLng([coord.lat,coord.lng])
         }, 100*index);
