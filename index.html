@@ -34,7 +34,7 @@
 <Script>
 
     // leaflet map with google satellite layer
-    var map = L.map('map').setView([-0.7858410685941518, 35.33387634040145],11);
+    var map = L.map('map').setView([-0.781064, 35.343239],11);
     var tileLayer= L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
     maxZoom: 20,
     subdomains:['mt0','mt1','mt2','mt3']
@@ -47,7 +47,7 @@ var bikeIcon = L.icon({
     iconSize: [40,40]
 })
 //marker
-var marker = L.marker([-0.7858410685941518, 35.33387634040145],{icon:bikeIcon}).addTo(map)
+var marker = L.marker([-0.781064, 35.343239],{icon:bikeIcon}).addTo(map)
 
 
 //map on click
@@ -56,7 +56,7 @@ map.on('click', function(e){
     var secondMarker= L.marker([e.latlng.lat,e.latlng.lng]).addTo(map);
     L.Routing.control({
   waypoints: [
-    L.latLng(-0.7858410685941518, 35.33387634040145),
+    L.latLng(-0.781064, 35.343239),
     L.latLng(e.latlng.lat,e.latlng.lng)
   ]
 }).on('routesfound',function(e){
