@@ -1,77 +1,65 @@
 <!DOCTYPE html>
-<html>
-
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Routing App Using Leaflet</title>
-
-    <!-- leaflet css cdn -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"/>
-    <!-- leaflet routing machine  css  -->
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" />
+    <!-- Leaflet Routing Machine CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-
+    
     <style>
-        body{
+        body {
             margin: 0;
             padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        #map {
+            width: 100%;
+            height: 80vh;
+        }
+        #controls {
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        button, select {
+            margin: 5px;
+            padding: 5px 10px;
+        }
+        #routeInfo {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
         }
     </style>
+        <!-- jsPDF for PDF export -->
 </head>
-
 <body>
-    <h2> Routing App Using Leaflet (Work in Progres)</h2>
-    <h2> Click on your Destination from Bomet Main Stage</h2>
-    <div id="map" style="width: 100%; height:100vh "></div>
+    <h2>Routing App Using Leaflet</h2>
+    <div id="controls">
+        <button id="clearRoute">Clear Route</button>
+        <select id="exportFormat">
+            <option value="pdf">PDF</option>
+            <option value="csv">CSV</option>
+        </select>
+        <button id="exportRoute">Export Route</button>
+        <div id="routeInfo"></div>
+    </div>
+    <div id="map"></div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+    <!-- Leaflet Routing Machine JS -->
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+    <!-- Custom Script -->
+    <script src="script.js"></script>
 </body>
-
 </html>
-
-<!-- leaflet js cdn -->
-<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
-<!-- leaflet routing machine  js  -->
-<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
-
-
-<Script>
-
-    // leaflet map with google satellite layer
-    var map = L.map('map').setView([-0.781064, 35.343239],11);
-    var tileLayer= L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
-    maxZoom: 20,
-    subdomains:['mt0','mt1','mt2','mt3']
-}).addTo(map);
-
-
-//marker icon
-var bikeIcon = L.icon({
-    iconUrl:'img/taxi.jpg',
-    iconSize: [40,40]
-})
-//marker
-var marker = L.marker([-0.781064, 35.343239],{icon:bikeIcon}).addTo(map)
-
-
-//map on click
-map.on('click', function(f){
-    console.log(f)
-    var secondMarker= L.marker([f.latlng.lat,f.latlng.lng]).addTo(map);
-    L.Routing.control({
-  waypoints: [
-    L.latLng(-0.781064, 35.343239),
-    L.latLng(f.latlng.lat,f.latlng.lng)
-  ]
-}).on('routesfound',function(f){
-    console.log(f)
-    f.routes[0].coordinates.forEach(function(coord,index){
-        setTimeout(()=>{
-            marker.setLatLng([coord.lat,coord.lng])
-        }, 100*index);
-    })
-})
-
-.addTo(map);
-})
-
-
-
-</Script>
