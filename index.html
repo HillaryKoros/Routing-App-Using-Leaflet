@@ -39,15 +39,25 @@
             border-radius: 5px;
         }
     </style>
-        <!-- jsPDF for PDF export -->
 </head>
 <body>
     <h2>Routing App Using Leaflet</h2>
     <div id="controls">
         <button id="clearRoute">Clear Route</button>
+        <button id="detectLocation">Use Current Location</button>
+        <select id="transportMode">
+            <option value="car">Car</option>
+            <option value="motorcycle">Motorcycle</option>
+            <option value="foot">Walking</option>
+            <option value="public_transport">public transport</option>
+        </select>
+        <!-- <button id="addWaypoint">Add Waypoint</button>
+        <button id="saveRoute">Save Route</button>
+        <button id="loadRoute">Load Saved Route</button> -->
         <select id="exportFormat">
             <option value="pdf">PDF</option>
             <option value="csv">CSV</option>
+            <option value="geojson">Shapefile</option>
         </select>
         <button id="exportRoute">Export Route</button>
         <div id="routeInfo"></div>
@@ -58,8 +68,13 @@
     <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
     <!-- Leaflet Routing Machine JS -->
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
-
+     <!-- jsPDF Library -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- shp-write library for Shapefiles (if needed) -->
+    <script src="https://unpkg.com/shp-write"></script>
     <!-- Custom Script -->
     <script src="script.js"></script>
+
+
 </body>
 </html>
