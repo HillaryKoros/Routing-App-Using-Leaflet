@@ -4,77 +4,216 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Routing App Using Leaflet</title>
-    
+
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" />
     <!-- Leaflet Routing Machine CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-    
+
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
         }
+
         #map {
-            width: 100%;
-            height: 80vh;
+            width: 70%;
+            height: 100vh;
+            border: 2px solid #ddd;
+            border-radius: 8px 0 0 8px;
         }
+
         #controls {
-            padding: 10px;
-            background-color: #f0f0f0;
+            width: 30%;
+            padding: 15px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 0 8px 8px 0;
+            overflow-y: auto;
         }
+
         h2 {
             text-align: center;
-            margin-bottom: 10px;
+            margin: 20px 0;
+            color: #333;
+            font-size: 24px;
         }
+
         button, select {
-            margin: 5px;
-            padding: 5px 10px;
-        }
-        #routeInfo {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #e0e0e0;
+            margin: 5px 0;
+            padding: 8px 15px;
+            border: none;
             border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+        }
+        /* Ensures SVG icons scale properly */
+.bi {
+    display: inline-block;
+    vertical-align: middle;
+    fill: #333; /* Icon color */
+}
+
+.bi-arrow-up,
+.bi-arrow-right,
+.bi-arrow-left,
+.bi-arrow-up-right,
+.bi-arrow-up-left {
+    width: 20px; /* Icon width */
+    height: 20px; /* Icon height */
+}
+
+@media (max-width: 768px) {
+    .bi-arrow-up,
+    .bi-arrow-right,
+    .bi-arrow-left,
+    .bi-arrow-up-right,
+    .bi-arrow-up-left {
+        width: 16px; /* Adjusted icon width for smaller screens */
+        height: 16px; /* Adjusted icon height for smaller screens */
+    }
+}
+
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        select {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        #routeInfo {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        #routeInfo strong {
+            color: #333;
+        }
+
+        #routeSelect, #exportFormat {
+            margin-top: 10px;
+        }
+
+        #routeSelect {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+
+        #exportRoute {
+            background-color: #28a745;
+            width: 100%;
+        }
+
+        #exportRoute:hover {
+            background-color: #218838;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            #map {
+                width: 100%;
+                height: 50vh;
+            }
+
+            #controls {
+                width: 100%;
+                height: 50vh;
+                overflow-y: auto;
+            }
+
+            button, select {
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+
+            #routeInfo {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
-    <h2>Routing App Using Leaflet</h2>
+    <div id="map"></div>
     <div id="controls">
+        <h2>Routing App</h2>
+        <!-- Clear Route Button -->
         <button id="clearRoute">Clear Route</button>
+    
+        <!-- Use Current Location Button -->
         <button id="detectLocation">Use Current Location</button>
+    
+        <!-- Transport Mode Selection -->
+        <label for="transportMode">Select Transport Mode:</label>
         <select id="transportMode">
             <option value="car">Car</option>
             <option value="motorcycle">Motorcycle</option>
             <option value="foot">Walking</option>
-            <option value="public_transport">public transport</option>
+            <option value="public_transport">Public Transport</option>
         </select>
-        <!-- <button id="addWaypoint">Add Waypoint</button>
-        <button id="saveRoute">Save Route</button>
-        <button id="loadRoute">Load Saved Route</button> -->
+    
+        <!-- Route Information Display -->
+        <div id="routeInfo">
+            <strong>Total Distance:</strong> <span id="distance"></span><br>
+            <strong>Estimated Time:</strong> <span id="time"></span><br>
+            <strong>Average Speed:</strong> <span id="speed"></span><br>
+            <strong>Transport Mode:</strong> <span id="mode"></span>
+        </div>
+    
+        <!-- Route Selection Dropdown (for selecting different routes) -->
+        <label for="routeSelect">Select Route:</label>
+        <select id="routeSelect">
+            <!-- This will be dynamically populated based on available routes -->
+        </select>
+    
+        <!-- Export Format Dropdown -->
+        <label for="exportFormat">Export as:</label>
         <select id="exportFormat">
             <option value="pdf">PDF</option>
-            <option value="csv">CSV</option>
-            <option value="geojson">Shapefile</option>
+            <option value="geojson">GeoJSON</option>
         </select>
+
+        <!-- Export Route Button -->
         <button id="exportRoute">Export Route</button>
-        <div id="routeInfo"></div>
-    </div>
-    <div id="map"></div>
+    </div>  
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
     <!-- Leaflet Routing Machine JS -->
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
-     <!-- jsPDF Library -->
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- shp-write library for Shapefiles (if needed) -->
-    <script src="https://unpkg.com/shp-write"></script>
+    <!-- jsPDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- Custom Script -->
     <script src="script.js"></script>
-
-
 </body>
 </html>
